@@ -14,9 +14,6 @@ from My_Transformer import (
     DecoderMetaData
 )
 
-# -------------------------------------------------------------------------
-# Positional Encoding Tests
-# -------------------------------------------------------------------------
 def test_positional_encoding_shape():
     seq_len, d_model = 10, 16
     pe = positional_encoding(seq_len, d_model)
@@ -30,9 +27,6 @@ def test_positional_encoding_variation():
     assert not torch.allclose(pe[0], pe[1]), "Different positions should have different encodings"
 
 
-# -------------------------------------------------------------------------
-# MultiHead Attention Tests
-# -------------------------------------------------------------------------
 def test_multihead_attention_output_shape():
     batch, seq_len, d_model = 2, 8, 32
     num_heads, out_dim = 4, 64
@@ -50,9 +44,6 @@ def test_multihead_attention_masked():
     assert not torch.isnan(out).any(), "Masked attention should not produce NaN values"
 
 
-# -------------------------------------------------------------------------
-# Cross Attention Tests
-# -------------------------------------------------------------------------
 def test_cross_attention_output_shape():
     batch, seq_len, d_model, enc_dim = 2, 6, 16, 32
     cross_attn = MultiHeadCrossAttention(d_model, enc_dim, 64, seq_len, 4)
@@ -62,9 +53,6 @@ def test_cross_attention_output_shape():
     assert out.shape == (batch, seq_len, 64), "Cross-attention output shape mismatch"
 
 
-# -------------------------------------------------------------------------
-# Feed Forward Network Tests
-# -------------------------------------------------------------------------
 def test_feedforward_output_shape():
     batch, seq_len, d_model, d_ff = 4, 10, 32, 128
     ffn = FeedForwardNetwork(d_model, d_ff)
@@ -82,9 +70,6 @@ def test_feedforward_residual_connection():
     assert torch.isfinite(out).all(), "FFN output contains NaNs or infs"
 
 
-# -------------------------------------------------------------------------
-# Encoder and Decoder Tests
-# -------------------------------------------------------------------------
 def test_encoder_forward_pass():
     attn_meta = AttentionMetaData(out_dim=64, num_heads=4)
     enc_meta = EncoderMetaData(in_dim=16, embedding_dim=32, seq_length=10, attention_metadata=attn_meta, out_dim=64)
@@ -113,9 +98,6 @@ def test_decoder_forward_pass():
     assert out.shape == (2, 10, 128), "Decoder output shape mismatch"
 
 
-# -------------------------------------------------------------------------
-# Full Transformer Model Test
-# -------------------------------------------------------------------------
 def test_full_transformer_model_forward():
     model = TransformerModel(
         num_layers=2,
@@ -150,9 +132,6 @@ def test_transformer_gradients():
     assert x.grad is not None, "Gradients did not backpropagate through the Transformer"
 
 
-# -------------------------------------------------------------------------
-# Numerical Stability / Sanity Checks
-# -------------------------------------------------------------------------
 def test_no_nan_outputs():
     model = TransformerModel(
         num_layers=1,
